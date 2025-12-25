@@ -38,7 +38,7 @@ on:
       - master
 
 env:
-  DEBUG: y
+  DEBUG: n
   BOOST: boost_1_90_0
 
 jobs:
