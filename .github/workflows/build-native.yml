@@ -159,7 +159,7 @@ jobs:
             target_bin_path: bin
             target_final: XCSoar
             target_ext: ''
-            target_upload: false
+            target_upload: true
             target_container: ''
           - os: macos-14
             target: IOS64
@@ -252,6 +252,14 @@ jobs:
             /usr/local/var/homebrew/cache
             /Users/runner/Library/Caches/Homebrew
 
+      - name: "Cache ANGLE downloads"
+        if: ${{ matrix.target == 'MACOS' }}
+        uses: actions/cache@v5
+        with:
+          key: angle-${{ hashFiles('darwin/fetch-angle-from-chrome.sh') }}
+          restore-keys: angle-
+          path: output/angle-download
+
       - name: "Cache Boost"
         uses: actions/cache@v5
         with:
@@ -282,7 +290,6 @@ jobs:
           restore-keys: |
             thirdparty-${{ matrix.target }}-
           path: |
-            ${{ github.workspace }}/output/${{ matrix.target }}/**/lib
             ${{ github.workspace }}/output/${{ matrix.target }}/lib
 
       - name: Install dependencies
