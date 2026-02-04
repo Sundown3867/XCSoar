@@ -2,6 +2,7 @@
 // Copyright The XCSoar Project
 
 #include "NMEA/Info.hpp"
+#include "Asset.hpp"
 #include "Atmosphere/AirDensity.hpp"
 #include "time/Cast.hxx"
 
@@ -95,6 +96,7 @@ NMEAInfo::Reset() noexcept
 
   gps.Reset();
   acceleration.Reset();
+  gyroscope.Reset();
   attitude.Reset();
 
   location_available.Clear();
@@ -170,11 +172,9 @@ NMEAInfo::ExpireWallClock() noexcept
 
   UpdateClock();
 
-#if defined(ANDROID) || defined(__APPLE__)
-  if (gps.nonexpiring_internal_gps)
+  if ((IsAndroid() || IsIOS()) && gps.nonexpiring_internal_gps)
     /* the internal GPS does not expire */
     return;
-#endif
 
   alive.Expire(clock, std::chrono::seconds(10));
   if (!alive) {
@@ -251,6 +251,7 @@ NMEAInfo::Complement(const NMEAInfo &add) noexcept
   }
 
   acceleration.Complement(add.acceleration);
+  gyroscope.Complement(add.gyroscope);
   attitude.Complement(add.attitude);
 
   if (location_available.Complement(add.location_available)) {

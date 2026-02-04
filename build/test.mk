@@ -130,6 +130,10 @@ TEST_NAMES += \
 	TestDriver
 endif
 
+ifeq ($(HAVE_WIN32),y)
+TEST_NAMES += TestUTF8Win
+endif
+
 TESTS = $(call name-to-bin,$(TEST_NAMES))
 
 TEST_HEX_STRING_SOURCES = \
@@ -271,6 +275,7 @@ TEST_TASK_SAVE_SOURCES = \
 	$(SRC)/Engine/Util/Gradient.cpp \
 	$(SRC)/XML/Node.cpp \
 	$(TEST_SRC_DIR)/tap.c \
+	$(TEST_SRC_DIR)/FakeLogFile.cpp \
 	$(SRC)/Task/SaveFile.cpp \
 	$(TEST_SRC_DIR)/TestTaskSave.cpp
 TEST_TASK_SAVE_OBJS = $(call SRC_TO_OBJ,$(TEST_TASK_SAVE_SOURCES))
@@ -543,6 +548,15 @@ TEST_UTF8_SOURCES = \
 	$(TEST_SRC_DIR)/TestUTF8.cpp
 TEST_UTF8_DEPENDS = UTIL
 $(eval $(call link-program,TestUTF8,TEST_UTF8))
+
+ifeq ($(HAVE_WIN32),y)
+TEST_UTF8WIN_SOURCES = \
+	$(TEST_SRC_DIR)/tap.c \
+	$(TEST_SRC_DIR)/TestUTF8Win.cpp \
+	$(SRC)/ui/canvas/gdi/UTF8Win.cpp
+TEST_UTF8WIN_DEPENDS = UTIL
+$(eval $(call link-program,TestUTF8Win,TEST_UTF8WIN))
+endif
 
 TEST_INPUT_CONFIG_SOURCES = \
 	$(TEST_SRC_DIR)/tap.c \
@@ -2299,6 +2313,7 @@ RUN_PROFILE_LIST_DIALOG_SOURCES = \
 	$(TEST_SRC_DIR)/Fonts.cpp \
 	$(TEST_SRC_DIR)/FakeAsset.cpp \
 	$(TEST_SRC_DIR)/FakeLanguage.cpp \
+	$(TEST_SRC_DIR)/FakeLogFile.cpp \
 	$(TEST_SRC_DIR)/RunProfileListDialog.cpp
 RUN_PROFILE_LIST_DIALOG_LDADD = $(FAKE_LIBS)
 RUN_PROFILE_LIST_DIALOG_DEPENDS = PROFILE FORM WIDGET DATA_FIELD SCREEN EVENT RESOURCE ASYNC OS IO THREAD MATH UTIL
